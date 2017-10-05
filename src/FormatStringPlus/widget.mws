@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<clsMXWidgetSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <WidgetName>formatstring</WidgetName>
+  <SourcePath>C:\Projects\Tickets - Projects\100913 - FormatString\Widget source</SourcePath>
+  <DestinationPath>C:\Projects\Tickets - Projects\100913 - FormatString</DestinationPath>
+  <Monitor>true</Monitor>
+</clsMXWidgetSettings>
