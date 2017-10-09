@@ -1,17 +1,14 @@
 {
-  "name": "dynamic-image",
-  "widgetName": "DynamicImage",
-  "version": "1.0.0",
+  "name": "format-string-plus",
+  "widgetName": "FormartStringPlus",
+  "version": "1.0.1",
   "description": "",
-  "copyright": "Mendix BV",
+  "copyright": "Mansystems",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/MansystemsCorp/FormatStringPlus"
   },
   "license": "Apache-2.0",
-  "bugs": {
-    "url": ""
-  },
   "devDependencies": {
     "grunt": "1.0.1",
     "grunt-check-dependencies": "^1.0.0",
