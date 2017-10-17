@@ -16,7 +16,7 @@ define([
     _mxobj              : null,
     replaceattributes   : null,
     
-    startup : function() {
+    postCreate : function() {
         if (this._hasStarted)
             return;
         
@@ -33,11 +33,11 @@ define([
 						default: this.connect(this.domNode, "onclick", this.execmf);
 							break;
         	}
-        this.actLoaded();
     },
 
     update : function(obj, callback){
         construct.empty(this.domNode);
+        this.unsubscribeAll();
         
         if (!obj){
             callback && callback();
@@ -93,6 +93,7 @@ define([
             var guid = this._mxobj.getReference(split[0]);
             var htmlBool = list[i].renderHTML;
             var oldnumber = numberlist[i];
+            var value = null;
             if(guid !== ''){
                 mx.data.get({
                     guid : guid,
@@ -130,7 +131,7 @@ define([
             return caption;
         } else {
         		
-            var value = mx.parser.formatAttribute(obj, attr);
+            var value = mx.parser.formatAttribute(obj, attr, null);
             var attrdatatype = obj.getAttributeType(attr);
             
 						if( attrdatatype == "Float" || attrdatatype == "Currency") {
@@ -164,7 +165,7 @@ define([
 
     checkString : function (string, htmlBool) {
         if(string.indexOf("<script") > -1 || !htmlBool)
-        string = mxui/dom.escapeString(string);   
+        string = dom.escapeString(string);   
         return string;  
     },
 
@@ -241,7 +242,7 @@ define([
 
         });
     }
-    });
+        });
     });
 
 require([ "formatstringplus/widget/formatstringplus" ]);
