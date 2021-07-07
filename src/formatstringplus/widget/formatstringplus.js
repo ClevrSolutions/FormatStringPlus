@@ -1,19 +1,28 @@
+define([
+    "dojo/_base/declare",
+    "mxui/widget/_WidgetBase",
+    "mxui/dom",
+    "dojo/_base/lang",
+    "dojo/dom-construct",
+    "dojo/dom-class",
+    "dojo/date/locale"
 
-dojo.provide("formatstringplus.widget.formatstringplus");
+], function (declare, _WidgetBase, dom, lang, construct, domClass, locale) {
+    "use strict";
 
-dojo.declare('formatstringplus.widget.formatstringplus', mxui.widget._WidgetBase, {
+    return declare("formatstringplus.widget.formatstringplus", [ _WidgetBase ], {
     
     _hasStarted         : false,
     _mxobj              : null,
     replaceattributes   : null,
     
-    startup : function() {
+    postCreate : function() {
         if (this._hasStarted)
             return;
         
         this.attributeList = this.notused;
         this._hasStarted = true;
-        dojo.addClass(this.domNode, 'formatstring_widget');
+        domClass.add(this.domNode, 'formatstring_widget');
 
         if (this.onclickmf !== '') 
         	switch(this.EventType){
@@ -24,11 +33,11 @@ dojo.declare('formatstringplus.widget.formatstringplus', mxui.widget._WidgetBase
 						default: this.connect(this.domNode, "onclick", this.execmf);
 							break;
         	}
-        this.actLoaded();
     },
 
     update : function(obj, callback){
-        dojo.empty(this.domNode);
+        construct.empty(this.domNode);
+        this.unsubscribeAll();
         
         if (!obj){
             callback && callback();
@@ -74,7 +83,7 @@ dojo.declare('formatstringplus.widget.formatstringplus', mxui.widget._WidgetBase
         }        
     },
 
-    // The fetch referencse is an async action, we use dojo.hitch to create a function that has values of the scope of the for each loop we are in at that moment.
+    // The fetch referencse is an async action, we use lang.hitch to create a function that has values of the scope of the for each loop we are in at that moment.
     fetchReferences : function(list, numberlist) {
         for(var i = 0; i < list.length; i++) {
             var self = this;
@@ -84,10 +93,11 @@ dojo.declare('formatstringplus.widget.formatstringplus', mxui.widget._WidgetBase
             var guid = this._mxobj.getReference(split[0]);
             var htmlBool = list[i].renderHTML;
             var oldnumber = numberlist[i];
+            var value = null;
             if(guid !== ''){
                 mx.data.get({
                     guid : guid,
-                    callback : dojo.hitch(this, function(data, obj) {
+                    callback : lang.hitch(this, function(data, obj) {
                         value = self.fetchAttr(obj, data.split[2], data.htmlBool, data.oldnumber);
                         self.replaceattributes.push({ id: data.i, variable: data.listObj.variablename, value: value});
                         self.buildString();
@@ -121,7 +131,7 @@ dojo.declare('formatstringplus.widget.formatstringplus', mxui.widget._WidgetBase
             return caption;
         } else {
         		
-            var value = mx.parser.formatAttribute(obj, attr);
+            var value = mx.parser.formatAttribute(obj, attr, null);
             var attrdatatype = obj.getAttributeType(attr);
             
 						if( attrdatatype == "Float" || attrdatatype == "Currency") {
@@ -136,8 +146,8 @@ dojo.declare('formatstringplus.widget.formatstringplus', mxui.widget._WidgetBase
 
     // buildstring also does renderstring because of callback from fetchReferences is async.
     buildString : function(message){
-        var str = this.displaystr;
-
+        var str = this.displaystr,
+        attr = null;
         for (attr in this.replaceattributes) {
             var settings = this.replaceattributes[attr];
             str = str.split('\${' + settings.variable + '}').join(settings.value);
@@ -147,15 +157,15 @@ dojo.declare('formatstringplus.widget.formatstringplus', mxui.widget._WidgetBase
     },
 
     renderString : function(msg) {
-        dojo.empty(this.domNode);
-        var div = mxui.dom.div( { 'class': 'formatstring'});
+        construct.empty(this.domNode);
+        var div = dom.create("div", { 'class': 'formatstring'});
         div.innerHTML = msg;
         this.domNode.appendChild(div);
     },
 
     checkString : function (string, htmlBool) {
         if(string.indexOf("<script") > -1 || !htmlBool)
-            string = mxui.dom.escapeHTML(string);   
+        string = dom.escapeString(string);   
         return string;  
     },
 
@@ -168,7 +178,7 @@ dojo.declare('formatstringplus.widget.formatstringplus', mxui.widget._WidgetBase
             else if (format.timeformat !== '')
                 selector = 'time';
             
-            datevalue = dojo.date.locale.format(new Date(value), {
+                datevalue = locale.format(new Date(value), {
                 selector : selector,
                 datePattern : format.dateformat,
                 timePattern : format.timeformat
@@ -232,4 +242,7 @@ dojo.declare('formatstringplus.widget.formatstringplus', mxui.widget._WidgetBase
 
         });
     }
-});
+        });
+    });
+
+require([ "formatstringplus/widget/formatstringplus" ]);
